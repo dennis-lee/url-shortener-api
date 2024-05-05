@@ -1,10 +1,21 @@
 import express from 'express'
+import { UrlService } from './url/service'
+import { UrlController } from './url/controller'
+
+import 'dotenv/config'
 
 const app = express()
-const port = 3000
+app.use(express.json())
+const port = process.env.SERVER_PORT
 
-app.get('/', (req: express.Request, res: express.Response) => {
-  res.send('Hello World!')
+const urlService = new UrlService()
+const urlController = new UrlController(urlService)
+
+app.post('/url', (req: express.Request, res: express.Response) => {
+  const url = urlController.shortenUrl(req.body.url)
+  res.status(200).json({
+    url,
+  })
 })
 
 app.listen(port, () => {
