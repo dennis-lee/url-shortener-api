@@ -1,10 +1,44 @@
+import { nanoid } from 'nanoid'
+import { IUrlRepository } from '../repositories/url/repository'
+import { Url } from './domain'
+
 export interface IUrlService {
-  createShortUrl(url: string): string
+  createShortUrl(url: string): Promise<string>
+  getUrl(id: string): Promise<string>
 }
 
 export class UrlService implements IUrlService {
-  public createShortUrl(url: string): string {
-    // TODO: replace with actual logic
-    return Math.random().toString(36).slice(2)
+  constructor(private readonly urlRepository: IUrlRepository) {}
+
+  public async createShortUrl(url: string): Promise<string> {
+    const u = new Url({
+      alias: nanoid(7),
+      original: url,
+      createdAt: new Date(),
+    })
+
+    try {
+      await this.urlRepository.save(u)
+    } catch (e) {
+      throw e
+    }
+
+    return u.alias
+  }
+
+  public async getUrl(alias: string): Promise<string> {
+    let url: Url | null
+
+    try {
+      url = await this.urlRepository.findByAlias(alias)
+    } catch (e) {
+      throw e
+    }
+
+    if (!url) {
+      throw new Error(`invalid alias: ${alias}`)
+    }
+
+    return url.original
   }
 }
