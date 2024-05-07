@@ -11,6 +11,12 @@ export class UrlService implements IUrlService {
   constructor(private readonly urlRepository: IUrlRepository) {}
 
   public async createShortUrl(url: string): Promise<string> {
+    try {
+      new URL(url)
+    } catch (_) {
+      throw new Error(`invalid url: ${url}`)
+    }
+
     const u = new Url({
       alias: nanoid(7),
       original: url,

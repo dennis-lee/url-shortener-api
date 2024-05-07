@@ -16,7 +16,7 @@ describe('UrlController', () => {
       repository.save = jest.fn().mockReturnValueOnce(null)
 
       const createShortUrl = jest.spyOn(service, 'createShortUrl')
-      await controller.shortenUrl('test')
+      await controller.shortenUrl('https://www.google.com')
 
       expect(createShortUrl).toHaveBeenCalledTimes(1)
     })
@@ -32,7 +32,7 @@ describe('UrlController', () => {
           alias,
           original,
           createdAt: new Date(),
-        })
+        }),
       )
 
       const getUrl = jest.spyOn(service, 'getUrl')
