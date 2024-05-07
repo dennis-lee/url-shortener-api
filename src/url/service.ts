@@ -23,6 +23,8 @@ export class UrlService implements IUrlService {
       createdAt: new Date(),
     })
 
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
     try {
       await this.urlRepository.save(u)
     } catch (e) {
@@ -35,6 +37,8 @@ export class UrlService implements IUrlService {
   public async getUrl(alias: string): Promise<string> {
     let url: Url | null
 
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
     try {
       url = await this.urlRepository.findByAlias(alias)
     } catch (e) {

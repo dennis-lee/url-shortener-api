@@ -2,7 +2,7 @@ import express from 'express'
 import { UrlService } from './url/service'
 import { UrlController } from './url/controller'
 
-import { Mongoose, connect } from 'mongoose'
+import * as mongoose from 'mongoose'
 
 import pino from 'pino'
 
@@ -26,11 +26,9 @@ async function main() {
   app.use(express.json())
   const port = process.env.SERVER_PORT
 
-  let db: Mongoose
-
   try {
     const uri = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`
-    db = await connect(uri, {
+    await mongoose.connect(uri, {
       dbName: process.env.MONGODB_DATABASE,
       user: process.env.MONGODB_USERNAME,
       pass: process.env.MONGODB_PASSWORD,

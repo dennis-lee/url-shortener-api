@@ -1,4 +1,3 @@
-import { Document, Model } from 'mongoose'
 import { Url } from '../../url/domain'
 import { IUrlDocument, UrlModel } from './model'
 

@@ -1,5 +1,4 @@
-import { Schema, Model, model } from 'mongoose'
-import { nanoid } from 'nanoid'
+import { Schema, model } from 'mongoose'
 
 export interface IUrlDocument extends Document {
   alias: string

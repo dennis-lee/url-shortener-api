@@ -1,7 +1,6 @@
 import { UrlController } from './controller'
 import { UrlService } from './service'
 import { UrlRepository } from '../repositories/url/repository'
-import { UrlModel } from '../repositories/url/model'
 import { Url } from './domain'
 
 describe('UrlController', () => {

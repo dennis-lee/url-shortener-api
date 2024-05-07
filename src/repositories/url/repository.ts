@@ -1,4 +1,3 @@
-import { Document, Mongoose } from 'mongoose'
 import { IUrlDocument, UrlModel } from './model'
 import { Url } from '../../url/domain'
 import { UrlMapper } from './mapper'
@@ -17,6 +16,9 @@ export class UrlRepository implements IUrlRepository {
 
   public async save(url: Url): Promise<void> {
     const model = this.mapper.toPersistence(url)
+
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
     try {
       await model.save()
     } catch (e) {
@@ -27,6 +29,8 @@ export class UrlRepository implements IUrlRepository {
   public async findByAlias(alias: string): Promise<Url | null> {
     let urlDoc: IUrlDocument | null
 
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
     try {
       urlDoc = await UrlModel.findOne({ alias })
     } catch (e) {
