@@ -25,7 +25,7 @@ paths:
                   example: https://www.example.com
       responses:
         '200':
-          description: Successful response
+          description: OK
           content:
             application/json:
               schema:
@@ -36,4 +36,29 @@ paths:
                     description: The shortened URL
                     example: https://localhost:3000/aksjd823
         '400':
-          description: Bad request (e.g., invalid JSON or missing URL)
+          description: Bad Request
+
+  /{alias}:
+    get:
+      tags:
+        - 'URL'
+      summary: Gets the original URL
+      parameters:
+        - in: path
+          name: alias
+          schema:
+            type: string
+          required: true
+          description: Alias of a shortened URL
+          example: suKX7hF
+      responses:
+        '301':
+          description: Moved Permanently
+          headers:
+            Location:
+              description: URL to redirect to
+              schema:
+                type: string
+                example: https://www.google.com
+        '404':
+          description: Not Found
