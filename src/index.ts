@@ -3,8 +3,10 @@ import { UrlService } from './url/service'
 import { UrlController } from './url/controller'
 
 import * as mongoose from 'mongoose'
+import cors from 'cors'
 
 import pino from 'pino'
+import { pinoHttp } from 'pino-http'
 
 import 'dotenv/config'
 import { UrlRepository } from './repositories/url/repository'
@@ -23,7 +25,10 @@ async function main() {
   })
 
   const app = express()
+  app.use(pinoHttp({ logger }))
+  app.use(cors())
   app.use(express.json())
+
   const port = process.env.SERVER_PORT
 
   try {
@@ -43,6 +48,7 @@ async function main() {
   const urlController = new UrlController(urlService)
 
   app.post('/url', async (req: express.Request, res: express.Response) => {
+    req.log.info('request received')
     const url = await urlController.shortenUrl(req.body.url)
     res.status(200).json({
       url,
@@ -50,6 +56,7 @@ async function main() {
   })
 
   app.get('/:alias', async (req: express.Request, res: express.Response) => {
+    req.log.info('request received')
     const url = await urlController.getOriginalUrl(req.params.alias)
     if (!url) return res.sendStatus(404)
 
