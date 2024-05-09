@@ -14,8 +14,16 @@ describe('UrlController', () => {
     it('should call UrlService.createShortUrl', async () => {
       repository.save = jest.fn().mockReturnValueOnce(null)
 
+      const req = {
+        body: {
+          url: 'https://www.google.com',
+        },
+        query: {},
+        params: {},
+      }
+
       const createShortUrl = jest.spyOn(service, 'createShortUrl')
-      await controller.shortenUrl('https://www.google.com')
+      await controller.shortenUrl(req)
 
       expect(createShortUrl).toHaveBeenCalledTimes(1)
     })
@@ -34,11 +42,19 @@ describe('UrlController', () => {
         }),
       )
 
+      const req = {
+        body: {},
+        query: {},
+        params: {
+          alias,
+        },
+      }
+
       const getUrl = jest.spyOn(service, 'getUrl')
-      const act = await controller.getOriginalUrl(alias)
+      const act = await controller.getOriginalUrl(req)
 
       expect(getUrl).toHaveBeenCalledTimes(1)
-      expect(act).toBe(original)
+      expect(act.body?.url).toBe(original)
     })
   })
 })
