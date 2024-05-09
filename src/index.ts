@@ -28,7 +28,13 @@ async function main() {
 
   const app = express()
   app.use(pinoHttp({ logger }))
-  app.use(cors())
+  app.use(
+    cors({
+      origin: true,
+      allowedHeaders: ['Content-Type'],
+      credentials: true,
+    }),
+  )
   app.use(express.json())
 
   const port = process.env.SERVER_PORT
