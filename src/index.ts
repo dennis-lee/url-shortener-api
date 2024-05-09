@@ -36,7 +36,17 @@ async function main() {
   let db: mongoose.Mongoose
 
   try {
-    const uri = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`
+    const uriScheme = process.env.NODE_ENV === 'development' ? 'mongodb' : 'mongodb+srv'
+    const uriHost =
+      process.env.NODE_ENV === 'development'
+        ? `${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`
+        : process.env.MONGODB_HOST
+    const dbOptions =
+      process.env.NODE_ENV === 'development'
+        ? ''
+        : `?retryWrites=true&w=majority&appName=${process.env.MONGODB_APPNAME}`
+
+    const uri = `${uriScheme}://${uriHost}/${dbOptions}`
     db = await mongoose.connect(uri, {
       dbName: process.env.MONGODB_DATABASE,
       user: process.env.MONGODB_USERNAME,
