@@ -5,6 +5,7 @@ import { Url } from './domain'
 export interface IUrlService {
   createShortUrl(url: string): Promise<string>
   getUrl(id: string): Promise<string>
+  getUrls(limit: number, skip: number): Promise<Url[]>
 }
 
 export class UrlService implements IUrlService {
@@ -50,5 +51,16 @@ export class UrlService implements IUrlService {
     }
 
     return url.original
+  }
+
+  public async getUrls(limit: number, skip: number): Promise<Url[]> {
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const urls = await this.urlRepository.find(limit, skip)
+      return urls
+    } catch (e) {
+      throw e
+    }
   }
 }

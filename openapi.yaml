@@ -37,6 +37,44 @@ paths:
                     example: https://localhost:3000/aksjd823
         '400':
           description: Bad Request
+    get:
+      tags:
+        - 'URL'
+      summary: Get all shortened URLs
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          description: Maximum number of objects to return
+          schema:
+            type: integer
+            minimum: 10 # Optional: Set minimum allowed value
+        - in: query
+          name: skip
+          required: false
+          description: Number of objects to skip before starting results
+          schema:
+            type: integer
+            minimum: 0 # Optional: Set minimum allowed value
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array # Response is an array
+                items:
+                  type: object # Each item in the array is an object
+                  # Define the properties of the object here
+                  properties:
+                    original: # Example property name
+                      type: string
+                      description: Original URL
+                      example: https://www.google.com
+                    alias:
+                      type: string
+                      description: URL alias
+                      example: suKX7hF
 
   /{alias}:
     get:

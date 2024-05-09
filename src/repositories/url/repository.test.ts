@@ -14,6 +14,14 @@ describe('UrlRepository', () => {
     })
   })
 
+  afterEach(async () => {
+    const collections = con.connection.collections
+    for (const key in collections) {
+      const collection = collections[key]
+      await collection.deleteMany()
+    }
+  })
+
   afterAll(async () => {
     if (con) {
       await con.connection.close()
@@ -69,6 +77,78 @@ describe('UrlRepository', () => {
         expect(error).toBeDefined()
         expect((error as Error).message).toContain('duplicate key error')
       }
+    })
+  })
+
+  describe('find', () => {
+    it('should return all', async () => {
+      const u1 = new Url({
+        alias: 'u1',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      const u2 = new Url({
+        alias: 'u2',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      await repository.save(u1)
+      await repository.save(u2)
+
+      const results = await repository.find()
+
+      expect(results.length).toEqual(2)
+    })
+
+    it('should limit results', async () => {
+      const limit = 1
+      const skip = 0
+
+      const u1 = new Url({
+        alias: 'u1',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      const u2 = new Url({
+        alias: 'u2',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      await repository.save(u1)
+      await repository.save(u2)
+
+      const results = await repository.find(limit, skip)
+
+      expect(results.length).toEqual(limit)
+    })
+
+    it('should skip results', async () => {
+      const limit = 0
+      const skip = 1
+
+      const u1 = new Url({
+        alias: 'u1',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      const u2 = new Url({
+        alias: 'u2',
+        original: 'https://www.google.com',
+        createdAt: new Date(),
+      })
+
+      await repository.save(u1)
+      await repository.save(u2)
+
+      const results = await repository.find(limit, skip)
+
+      expect(results.length).toEqual(1)
+      expect(results[0].alias).toEqual(u2.alias)
     })
   })
 })

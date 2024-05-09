@@ -5,6 +5,7 @@ import { UrlMapper } from './mapper'
 export interface IUrlRepository {
   save(url: Url): void
   findByAlias(alias: string): Promise<Url | null>
+  find(limit: number, skip: number): Promise<Url[]>
 }
 
 export class UrlRepository implements IUrlRepository {
@@ -43,5 +44,25 @@ export class UrlRepository implements IUrlRepository {
     }
 
     return null
+  }
+
+  public async find(limit: number = 10, skip: number = 0): Promise<Url[]> {
+    let urlDocs: IUrlDocument[]
+
+    // TODO: remove disable
+    // eslint-disable-next-line no-useless-catch
+    try {
+      urlDocs = await UrlModel.find({}).limit(limit).skip(skip)
+    } catch (e) {
+      throw e
+    }
+
+    const urls = []
+
+    for (const u of urlDocs) {
+      urls.push(this.mapper.toDomain(u))
+    }
+
+    return urls
   }
 }
