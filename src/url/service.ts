@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { IUrlRepository } from '../repositories/url/repository'
 import { Url } from './domain'
+import { isURL } from 'validator'
 
 export interface IUrlService {
   createShortUrl(url: string): Promise<string>
@@ -8,19 +9,28 @@ export interface IUrlService {
   getUrls(limit: number, skip: number): Promise<Url[]>
 }
 
+const URL_VALIDATOR_OPTIONS = {
+  require_protocol: false,
+}
+
 export class UrlService implements IUrlService {
   constructor(private readonly urlRepository: IUrlRepository) {}
 
   public async createShortUrl(url: string): Promise<string> {
+    if (!isURL(url, URL_VALIDATOR_OPTIONS)) {
+      throw new Error(`invalid url: ${url}`)
+    }
+
+    let sanitizedUrl = url
     try {
       new URL(url)
     } catch (_) {
-      throw new Error(`invalid url: ${url}`)
+      sanitizedUrl = 'http://' + url
     }
 
     const u = new Url({
       alias: nanoid(7),
-      original: url,
+      original: sanitizedUrl,
       createdAt: new Date(),
     })
 

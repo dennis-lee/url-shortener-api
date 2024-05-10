@@ -16,5 +16,13 @@ describe('UrlService', () => {
       await expect(service.createShortUrl(validUrl)).resolves.not.toThrow()
       await expect(service.createShortUrl(invalidUrl)).rejects.toThrow()
     })
+
+    it('should accept URLs without protocol', async () => {
+      repository.save = jest.fn().mockReturnValueOnce({})
+
+      const urlWithoutProtocol = 'www.google.com'
+
+      await expect(service.createShortUrl(urlWithoutProtocol)).resolves.not.toThrow()
+    })
   })
 })
