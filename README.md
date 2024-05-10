@@ -1,6 +1,6 @@
 # url-shortener-api
 
-Backend API for a URL shortening service. Creates a 7-character unique ID as the URL alias. Current production setup is a Docker container running on an EC2 instance (port 80).
+Backend API for a URL shortening service. Creates a 7-character unique ID as the URL alias. Current production setup is a Docker container running on an EC2 instance.
 
 ## Local development
 
