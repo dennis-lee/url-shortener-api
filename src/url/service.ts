@@ -87,6 +87,7 @@ export class UrlService implements IUrlService {
     const [seconds, nanoseconds] = process.hrtime()
     const input = s + (seconds * 1000000000 + nanoseconds).toString()
     const md5 = createHash('md5').update(input).digest('hex')
-    return Buffer.from(md5, 'hex').toString('base64').substring(0, length)
+    const enc = Buffer.from(md5, 'hex').toString('base64').substring(0, length)
+    return enc.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
   }
 }
