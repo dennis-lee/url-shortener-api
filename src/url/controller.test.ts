@@ -12,6 +12,7 @@ describe('UrlController', () => {
 
   describe('shortenUrl', () => {
     it('should call UrlService.createShortUrl', async () => {
+      repository.findByAlias = jest.fn().mockReturnValueOnce(null)
       repository.save = jest.fn().mockReturnValueOnce(null)
 
       const req = {

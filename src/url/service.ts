@@ -1,4 +1,5 @@
-import { nanoid } from 'nanoid'
+/* eslint-disable no-useless-catch */
+import { createHash } from 'crypto'
 import { IUrlRepository } from '../repositories/url/repository'
 import { Url } from './domain'
 import { isURL } from 'validator'
@@ -28,14 +29,26 @@ export class UrlService implements IUrlService {
       sanitizedUrl = 'http://' + url
     }
 
+    let alias = this.hash(sanitizedUrl, 7)
+    try {
+      for (;;) {
+        const found = await this.urlRepository.findByAlias(alias)
+        if (!found) {
+          break
+        }
+
+        alias = this.hash(sanitizedUrl, 7)
+      }
+    } catch (e) {
+      throw e
+    }
+
     const u = new Url({
-      alias: nanoid(7),
+      alias,
       original: sanitizedUrl,
       createdAt: new Date(),
     })
 
-    // TODO: remove disable
-    // eslint-disable-next-line no-useless-catch
     try {
       await this.urlRepository.save(u)
     } catch (e) {
@@ -48,8 +61,6 @@ export class UrlService implements IUrlService {
   public async getUrl(alias: string): Promise<string> {
     let url: Url | null
 
-    // TODO: remove disable
-    // eslint-disable-next-line no-useless-catch
     try {
       url = await this.urlRepository.findByAlias(alias)
     } catch (e) {
@@ -64,13 +75,18 @@ export class UrlService implements IUrlService {
   }
 
   public async getUrls(limit: number, skip: number): Promise<Url[]> {
-    // TODO: remove disable
-    // eslint-disable-next-line no-useless-catch
     try {
       const urls = await this.urlRepository.find(limit, skip)
       return urls
     } catch (e) {
       throw e
     }
+  }
+
+  private hash(s: string, length: number): string {
+    const [seconds, nanoseconds] = process.hrtime()
+    const input = s + (seconds * 1000000000 + nanoseconds).toString()
+    const md5 = createHash('md5').update(input).digest('hex')
+    return Buffer.from(md5, 'hex').toString('base64').substring(0, length)
   }
 }
